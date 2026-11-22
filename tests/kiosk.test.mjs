@@ -112,3 +112,18 @@ test('Travel help answers sample flight and booking questions offline', () => {
   assert.match(help.response(help.classify('How do I find my booking?')), /FERAS/);
   assert.equal(help.classify('Write a poem').kind, 'fallback');
 });
+
+test('home guide links to the demo screens in both languages', () => {
+  const home = { flightTable: () => '' };
+  browser.ui.locale = 'en';
+  const english = KioskUI.prototype.home.call(home);
+  assert.match(english, /Try the main steps/);
+  assert.match(english, /DXB482 and FERAS/);
+  assert.match(english, /data-nav="booking"/);
+
+  browser.ui.locale = 'ar';
+  const arabic = KioskUI.prototype.home.call(home);
+  assert.match(arabic, /جرّب الخطوات الأساسية/);
+  assert.match(arabic, /data-nav="smart"/);
+  browser.ui.locale = 'en';
+});
