@@ -127,3 +127,55 @@ test('home guide links to the demo screens in both languages', () => {
   assert.match(arabic, /data-nav="smart"/);
   browser.ui.locale = 'en';
 });
+
+test('dialog keeps keyboard focus inside and returns it when closed', () => {
+  let focused = '';
+  const opener = { isConnected: true, focus: () => { focused = 'opener'; } };
+  const first = { focus: () => { focused = 'first'; } };
+  const last = { focus: () => { focused = 'last'; } };
+  browser.document = {
+    activeElement: opener,
+    querySelectorAll: () => [first, last]
+  };
+  const dialog = { modal: null, returnFocus: null, renderModal: () => {} };
+  KioskUI.prototype.openModal.call(dialog, 'login');
+  assert.equal(dialog.modal, 'login');
+  assert.equal(dialog.returnFocus, opener);
+
+  browser.document.activeElement = first;
+  let prevented = false;
+  KioskUI.prototype.trapModalFocus.call(dialog, { shiftKey: true, preventDefault: () => { prevented = true; } });
+  assert.ok(prevented);
+  assert.equal(focused, 'last');
+
+  browser.document.activeElement = last;
+  KioskUI.prototype.trapModalFocus.call(dialog, { shiftKey: false, preventDefault: () => {} });
+  assert.equal(focused, 'first');
+
+  KioskUI.prototype.closeModal.call(dialog);
+  assert.equal(dialog.modal, null);
+  assert.equal(focused, 'opener');
+});
+
+test('map marks the selected gate and keeps it focused after selection', async () => {
+  const map = {
+    mapSelection: 'A7', locale: 'en',
+    mapPoints: KioskUI.prototype.mapPoints,
+    mapRoute: KioskUI.prototype.mapRoute,
+    heading: () => ''
+  };
+  assert.match(KioskUI.prototype.mapPage.call(map), /data-map-select="A7"[^>]*aria-pressed="true"/);
+
+  let focused = false;
+  browser.document = { querySelector: () => ({ focus: () => { focused = true; } }) };
+  const click = {
+    target: {
+      matches: () => false,
+      closest: () => ({ dataset: { mapSelect: 'B4' }, tagName: 'g' })
+    }
+  };
+  const state = { mapSelection: 'A7', render: () => {} };
+  await KioskUI.prototype.handleClick.call(state, click);
+  assert.equal(state.mapSelection, 'B4');
+  assert.ok(focused);
+});
