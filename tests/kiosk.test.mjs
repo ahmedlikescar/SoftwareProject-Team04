@@ -179,3 +179,28 @@ test('map marks the selected gate and keeps it focused after selection', async (
   assert.equal(state.mapSelection, 'B4');
   assert.ok(focused);
 });
+
+test('reset demo clears the session but keeps saved FAQs and language', () => {
+  let cleared = 0;
+  let page = '';
+  const savedFaq = [{ questionEn: 'Where is the desk?' }];
+  const state = {
+    scanner: { clearBuffer: () => { cleared++; } },
+    locale: 'ar', faq: savedFaq, admin: true,
+    flightResult: { no: 'EK203' }, booking: { passenger: 'Tawfiq Feras' },
+    smartAttempts: 3, chatMessages: [{ text: 'hello' }],
+    logs: [{ code: 'TEST' }], latencies: [400],
+    navigate: next => { page = next; }, announce: () => {}
+  };
+  KioskUI.prototype.resetDemo.call(state);
+  assert.equal(cleared, 1);
+  assert.equal(page, 'home');
+  assert.equal(state.flightResult, null);
+  assert.equal(state.booking, null);
+  assert.equal(state.smartAttempts, 0);
+  assert.equal(state.chatMessages.length, 0);
+  assert.equal(state.logs.length, 0);
+  assert.equal(state.admin, false);
+  assert.equal(state.locale, 'ar');
+  assert.equal(state.faq, savedFaq);
+});

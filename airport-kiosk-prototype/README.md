@@ -9,7 +9,7 @@ Open `index.html` directly in a browser. The site uses a single HTML file with n
 3. Open **My booking**. Use `DXB482` + `FERAS` for Tawfiq Feras or `UAE729` + `SHERIF` for Ahmed Sherif. Select **Print boarding pass** to open the browser's print window, then choose a printer or save a PDF.
 4. Try eligible, expired, and unreadable documents in **Smart Gate**. Three unreadable scans lead to staff assistance.
 5. Select a gate or facility on **Airport map**, browse **Discover UAE**, and ask **Travel help** about a flight, gate, baggage, booking, or transport.
-6. Expand **Equipment and privacy** to watch the ten-second passport-memory clear. **Staff / IT Admin** uses demo credentials `admin` / `swe401` and lets you edit local FAQ entries.
+6. Expand **Equipment and privacy** to watch the ten-second passport-memory clear. **Staff / IT Admin** uses demo credentials `admin` / `swe401` and lets you edit local FAQ entries. Use **Reset demo** there to start the walkthrough again.
 
 The optional Gemini code has no key in this public copy. Travel help uses local answers, so it still works offline. The remaining airport systems are simulations.
 
