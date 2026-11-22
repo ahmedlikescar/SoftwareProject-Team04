@@ -113,6 +113,50 @@ test('Travel help answers sample flight and booking questions offline', () => {
   assert.equal(help.classify('Write a poem').kind, 'fallback');
 });
 
+test('four help styles appear and change English and Arabic replies', () => {
+  const help = new NLPAssistantController(() => [], () => {});
+  const state = {
+    locale: 'en', persona: 'formal', chatMessages: [], chatBusy: false,
+    heading: () => '', assistantController: help,
+    personaReply: KioskUI.prototype.personaReply
+  };
+  const page = KioskUI.prototype.assistant.call(state);
+  for (const name of ['Formal Concierge', 'Friendly Local Guide', 'Quick & Concise Express', 'Family/Accessibility Helper']) {
+    assert.ok(page.includes(name));
+  }
+  assert.match(page, /data-persona="formal" aria-pressed="true"/);
+  const booking = { kind: 'booking' };
+  const formal = state.personaReply(booking, 'formal');
+  const local = state.personaReply(booking, 'local');
+  const express = state.personaReply(booking, 'express');
+  const family = state.personaReply(booking, 'family');
+  assert.equal(new Set([formal, local, express, family]).size, 4);
+  for (const reply of [formal, local, express, family]) assert.match(reply, /DXB482/);
+  browser.ui.locale = 'ar';
+  state.locale = 'ar';
+  assert.match(KioskUI.prototype.assistant.call(state), /المرشد المحلي الودود/);
+  assert.match(state.personaReply(booking, 'family'), /حجزي/);
+  browser.ui.locale = 'en';
+});
+
+test('choosing a help style updates the selection and keeps keyboard focus', async () => {
+  let focused = false;
+  let announcement = '';
+  browser.document = { querySelector: () => ({ focus: () => { focused = true; } }) };
+  const state = {
+    persona: 'formal', render: () => {}, announce: message => { announcement = message; }
+  };
+  await KioskUI.prototype.handleClick.call(state, {
+    target: {
+      matches: () => false,
+      closest: () => ({ dataset: { persona: 'family' } })
+    }
+  });
+  assert.equal(state.persona, 'family');
+  assert.ok(focused);
+  assert.match(announcement, /Family\/Accessibility Helper/);
+});
+
 test('home guide links to the demo screens in both languages', () => {
   const home = { flightTable: () => '' };
   browser.ui.locale = 'en';

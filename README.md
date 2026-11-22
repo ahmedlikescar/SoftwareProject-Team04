@@ -12,7 +12,7 @@ To try it, [download the ZIP](https://github.com/ahmedlikescar/SoftwareProject-T
 4. **Print the boarding pass.** Open either booking and press **Print boarding pass**. Your browser will let you choose a printer or save it as a PDF.
 5. **Try Smart Gate.** The sample passports show approval, rejection, and what happens after three unreadable scans.
 6. **Find your way around.** Pick a gate or facility on **Airport map**, then open **Discover UAE** for the visitor info and QR summaries.
-7. **Ask Travel help.** Try a question about a flight, gate, baggage or transport. The answers work offline.
+7. **Ask Travel help.** Pick one of the four help styles, then try a question about a flight, gate, baggage or transport. The answers work offline.
 8. **Show the staff side.** Open **Equipment and privacy** to see the passport memory clear after 10 seconds. The **Staff / IT Admin** demo login is `admin` / `swe401` and includes the FAQ editor and status screen. Press **Reset demo** when you want to run through it again.
 
 It’s a presentation demo, so it doesn’t connect to real airport systems. The [full guide](airport-kiosk-prototype/README.md) has a few more details.
